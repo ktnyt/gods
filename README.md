@@ -1,0 +1,2 @@
+# gods
+Go Data Structures.
