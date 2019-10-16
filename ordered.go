@@ -36,7 +36,7 @@ func (dict Ordered) Indices(filter func(Entry) bool) []int {
 
 // Get returns the first entry with the given key.
 func (dict Ordered) Get(key string) string {
-	is := dict.Indices(func(entry Entry) { return entry.Key == key })
+	is := dict.Indices(func(entry Entry) bool { return entry.Key == key })
 	if len(is) == 0 {
 		panic(fmt.Errorf("Ordered does not have key: %s", key))
 	}
@@ -45,7 +45,7 @@ func (dict Ordered) Get(key string) string {
 
 // All returns all entries with the given key.
 func (dict Ordered) All(key string) []string {
-	is := dict.Indices(func(entry Entry) { return entry.Key == key })
+	is := dict.Indices(func(entry Entry) bool { return entry.Key == key })
 	ret := make([]string, len(is))
 	for j, i := range is {
 		ret[j] = dict[i].Value
@@ -55,15 +55,15 @@ func (dict Ordered) All(key string) []string {
 
 // Add an entry with the given key and value.
 func (dict *Ordered) Add(key, value string) {
-	dict = append(dict, Entry{Key: key, Value: value})
+	*dict = append(*dict, Entry{Key: key, Value: value})
 }
 
 // Delete all entries with the given key.
 func (dict *Ordered) Delete(key string) {
-	is := dict.Indices(func(entry Entry) { return entry.Key != key })
+	is := dict.Indices(func(entry Entry) bool { return entry.Key != key })
 	entries := make([]Entry, len(is))
 	for j, i := range is {
-		entries[j] = dict[i]
+		entries[j] = (*dict)[i]
 	}
 	*dict = Ordered(entries)
 }
